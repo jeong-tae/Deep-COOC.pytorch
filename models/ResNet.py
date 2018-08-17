@@ -153,9 +153,7 @@ class ResNet(nn.Module):
         bx = self.layer4[1](ax) 
         cx = self.layer4[2](bx) 
         # res5ax, res5bx, res5cx
-        import pdb
-        pdb.set_trace()
-
+        
         x = self.avgpool(cx)
         x = x.view(x.size(0), -1)
         #x = self.fc(x)
