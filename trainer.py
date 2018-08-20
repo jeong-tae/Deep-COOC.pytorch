@@ -103,19 +103,21 @@ def train():
 
         t0 = time.time()
 
-        logits = net(images)
+        logits, l1_loss = net(images)
         opt.zero_grad()
 
-        loss = criterion(logits, labels)
+        c_loss = criterion(logits, labels)
+        loss = l1_loss + c_loss
         loss.backward()
         
         opt.step()
         t1 = time.time()
 
-        logger.scalar_summary('train_loss', loss.item(), iteration + 1)
+        logger.scalar_summary('train_c_loss', c_loss.item(), iteration + 1)
+        logger.scalar_summary('train_l1_loss', l1_loss.item(), iteration + 1)
 
         if (iteration % 20) == 0:
-            print(" [*] Epoch[%d], Iter %d || Loss: %.4f || Timer: %.4fsec"%(epoch, iteration, loss.item(), (t1 - t0)))
+            print(" [*] Epoch[%d], Iter %d || c_Loss: %.4f || l1_loss: %.4f || gamma: %.4f || Timer: %.4fsec"%(epoch, iteration, c_loss.item(), l1_loss.item(), net.module.gamma.item(), (t1 - t0)))
 
         if (iteration % 1000) == 0:
             net.eval()
@@ -129,7 +131,7 @@ def train():
                         test_images = test_images.cuda()
                         test_labels = test_labels.cuda()
 
-                    test_logits = net(test_images)
+                    test_logits, _ = net(test_images)
                     test_loss = criterion(test_logits, test_labels)
 
                     test_losses.append(test_loss.item())

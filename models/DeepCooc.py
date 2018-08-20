@@ -14,28 +14,29 @@ class DeepCooc(nn.Module):
             pretrained = False # make sure
 
         self.backbone = resnet152(num_classes = 1000, pretrained = pretrained)
-        self.cooc_a = Cooc_Layer(2048, 128)
-        self.cooc_b = Cooc_Layer(2048, 128)
-        self.cooc_c = Cooc_Layer(2048, 128)
+        self.conv1x1 = nn.Conv2d(2048, 128, kernel_size = 1, bias = False)
+        self.cooc = Cooc_Layer(128)
         # Feature map reduction to remove features that have no contribution to information
         # and reduce computational cost
-        self.last_linear = nn.Linear((2048*8*8) + (128*128*3), num_classes)
+        self.last_linear = nn.Linear(128*8*8, num_classes)
+        self.gamma = nn.Parameter(torch.zeros(1))
 
     def forward(self, x):
-        x, ax, bx, cx = self.backbone(x)
-
+        x = self.backbone(x)
+        x = F.relu(self.conv1x1(x))
         # cooc_block
-        ax = self.cooc_a(ax)
-        bx = self.cooc_b(bx)
-        cx = self.cooc_c(cx)
+        g_x, l1_loss = self.cooc(x)
+        x = self.gamma * g_x + x
 
-        concat = torch.cat([x, ax, bx, cx], 1)
-        rets = self.last_linear(concat)
-        return rets
+        x = self.backbone.avgpool(x)
+        x = x.view(x.size(0), -1)
+
+        rets = self.last_linear(x)
+        return rets, l1_loss
 
 if __name__ == '__main__':
     print(" [*] Deep cooc model forward test")
     x = torch.randn([8, 3, 448, 448])
     net = DeepCooc(200)
-    logits = net(x)
+    logits, l1_loss = net(x)
     print(" [*] output shape:", logits.size())

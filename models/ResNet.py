@@ -149,16 +149,14 @@ class ResNet(nn.Module):
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
-        ax = self.layer4[0](x) 
-        bx = self.layer4[1](ax) 
-        cx = self.layer4[2](bx) 
+        x = self.layer4(x) 
         # res5ax, res5bx, res5cx
         
-        x = self.avgpool(cx)
-        x = x.view(x.size(0), -1)
+        #x = self.avgpool(cx)
+        #x = x.view(x.size(0), -1)
         #x = self.fc(x)
 
-        return x, ax, bx, cx
+        return x
 
 
 def resnet18(pretrained=False, **kwargs):
