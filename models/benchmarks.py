@@ -6,7 +6,7 @@ from .ResNet import resnet50, resnet101, resnet152
 
 class Resnet152(nn.Module):
     def __init__(self, num_classes, pretrained = True):
-        super(Resnet, self).__init__()
+        super(Resnet152, self).__init__()
         if pretrained:
             pretrained = 'imagenet'
         else:
@@ -22,7 +22,7 @@ class Resnet152(nn.Module):
 
 class Resnet50(nn.Module):
     def __init__(self, num_classes, pretrained = True):
-        super(Resnet, self).__init__()
+        super(Resnet50, self).__init__()
         if pretrained:
             pretrained = 'imagenet'
         else:

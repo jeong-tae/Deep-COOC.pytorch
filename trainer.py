@@ -27,11 +27,11 @@ parser.add_argument('--lr', default = 0.001, type = float, help = 'initial learn
 parser.add_argument('--lr_decay_steps', default = None, nargs = '+', type = int, help = 'lr decays for each steps')
 parser.add_argument('--batch_size', default = 32, type = int, help = '# of sample to learn at one iteration')
 parser.add_argument('--start_iter', default = 0, type = int, help = 'start iteration')
-parser.add_argument('--end_iter', default = 50000, type = int, help = 'end iteration')
+parser.add_argument('--end_iter', default = 20000, type = int, help = 'end iteration')
 parser.add_argument('--model_select', default = 'Deepcooc', type = str, help = ' --model_select: ["deepcooc", "resnet152"]')
 parser.add_argument('--exp_name', default = 'Deepcooc_CUB_resnet152_3', type = str, help = 'name of experiment')
 args = parser.parse_args()
-args.lr_decay_steps = [30, 60]
+args.lr_decay_steps = [1500, 3000, 4500, 6000, 7500, 9000, 10500, 13000, 14500, 16000, 17500, 19000]
 decay_steps = None
 
 net = None
@@ -56,9 +56,9 @@ else:
 
 logger = Logger('./visual/' + args.exp_name)
 opt = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()), 
-                lr = args.lr, momentum = 0.9)
+                lr = args.lr, momentum = 0.)
 #opt = optim.Adam(filter(lambda p: p.requires_grad, net.parameters()), 
-#                lr = args.lr, weight_decay = 0.00005)
+#                lr = args.lr)
 criterion = nn.CrossEntropyLoss()
 
 def train():
@@ -92,9 +92,9 @@ def train():
         if iteration % epoch_size == 0:
             epoch += 1
 
-        if epoch in args.lr_decay_steps:
+        if iteration in args.lr_decay_steps:
             steps += 1
-            adjust_learning_rate(opt, 0.1, steps, args.lr)
+            adjust_learning_rate(opt, 0.9, steps, args.lr)
     
         images, labels = next(batch_iterator)
         if args.cuda:
@@ -159,6 +159,7 @@ def train():
 
 def adjust_learning_rate(optimizer, gamma, steps, _lr):
     lr = _lr * (gamma ** (steps))
+    print(" [*] Adjust learning rate %.4f -> %.4f"%(_lr, lr))
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 

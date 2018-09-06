@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=3 python3 trainer.py --batch_size 16 --exp_name 'Deepcooc_CUB_resnet152_6' --model_select 'Deepcooc'
+CUDA_VISIBLE_DEVICES=1 python3 trainer.py --batch_size 16 --exp_name 'Deepcooc_CUB_resnet152_15' --model_select 'Deepcooc' --lr 0.0005
