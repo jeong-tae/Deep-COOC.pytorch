@@ -22,7 +22,7 @@ class Cooc_Layer(nn.Module):
 
     def forward(self, x):
         b, c, w, h = x.size()
-        splited = x.split(1, 1) # in_channels number of [batch, 1, w, h]
+        splited = x.split(1, 1) # in_channels(#) number of [batch, 1, w, h]
         g_features = []
         losses = []
 
@@ -44,7 +44,7 @@ class Cooc_Layer(nn.Module):
         g_features = self.conv1x1(contexts)
         g_features = g_features.view(b, c, w, h)
         #losses = F.smooth_l1_loss(g_features, x.detach())
-        losses = torch.sqrt(torch.sum(((g_features - x.detach())**2))) * 0.0025
+        #losses = torch.sqrt(torch.sum(((g_features - x.detach())**2))) * 0.0025
 
         """
         for i in range(self.depth):
@@ -67,7 +67,7 @@ class Cooc_Layer(nn.Module):
         losses = torch.stack(losses, 0).sum()
         """
 
-        return g_features, losses
+        return g_features#, losses
 
 if __name__ == '__main__':
     print(" [*] Cooc layer forward test")

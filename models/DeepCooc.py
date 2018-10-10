@@ -25,14 +25,15 @@ class DeepCooc(nn.Module):
         x = self.backbone(x)
         x = F.relu(self.conv1x1(x))
         # cooc_block
-        g_x, l1_loss = self.cooc(x)
+        #g_x, l1_loss = self.cooc(x)
+        g_x = self.cooc(x)
         x = self.gamma * g_x + x
 
         x = self.backbone.avgpool(x)
         x = x.view(x.size(0), -1)
 
         rets = self.last_linear(x)
-        return rets, l1_loss
+        return rets
 
 if __name__ == '__main__':
     print(" [*] Deep cooc model forward test")
