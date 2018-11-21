@@ -23,7 +23,7 @@ Implementation of [Deep-COOC](https://www.csie.ntu.edu.tw/~cyy/publications/pape
 ## Performance
  - Sometime Deep-cooc model well perform than benchmarks, it depends on hyperparams.
  - They saids that they've got 73.3% accuracy for ResNet-152 but I've got 83.14% after carefully tuning the model.
- - For now, I've got 83.4% accuracy for Deep-cooc model with some trials.
+ - For now, I've got 83.4% accuracy for Deep-cooc model with some trials. Still about 2% improvements is needed to reproduce
 
 ## Usage
  - For training a deepcooc model, do ./deepcooc_CUB2011.sh
