@@ -30,7 +30,7 @@ class Cooc_Layer(nn.Module):
         y_grid = x_grid.t()
         xy_grid = torch.stack([x_grid, y_grid], dim = -1)
 
-        mean = (3 - 1) / 2.
+        mean = 1. #(3 - 1) / 2.
         variance = 0.5**2
         gaussian_kernel = (1./(2. * math.pi * variance)) *\
                                         torch.exp(
